@@ -1,0 +1,169 @@
+P1:Install DHCP server 
+
+S1: sudo su    S2: apt-get install isc-dhcp-server 
+
+S3: nano /etc/default/isc-dhcp-server( In interfaces change it to “etho”) 
+
+S4: nano /etc/network/interfaces 
+
+(WRITE DOWN:  # interfaces(5) file used by ifup(8) and ifdown(8) 
+
+                              iface to inet loopback 
+
+                              address 172.16.0.1 
+
+                              netmask 255.255.0.0 
+
+                              network 172.16.0.0 
+
+                              broadcast 172.16.255.255 
+
+                              gateway 172.16.0.1) 
+
+S5: nano /etc/dhcp/dhcpd.conf (Uncomment the live from #A slightly differt confi) 
+
+S6: ipconfig /all (Take ipv4 adddres and ping) 
+
+S7: ping 192.168.56.1 
+
+ 
+
+P2:Confi NFS server 
+
+S1: sudo apt-get install nfs-kernel-server 
+
+S2: sudo nano /etc/idmapd.conf (changes domain name) 
+
+#Domain=localdomain and edit the domain name 
+
+S3: sudo nano /etc/exports 
+
+S4: systemctl restart nfs-server (restarts the nfs server) 
+
+S5: mount –t nfsdlp.srv.world:/home/home (mounts nfs server into home directory) 
+
+S6: df –hT (displays info mounts by nfs server) 
+
+S7: sudo nano /etc/fstab 
+
+S8: sudo apt-get install autofs 
+
+S9: sudo nano /etc/auto.master 
+
+S10: sudo mkdir /mntdir1 
+
+S11: systemctl restart autofs 
+
+S12: cd /mntdir1 
+
+S13: cat /proc/mounts | grep mntdir1 
+
+S14: Go to Control Panel>Programs>turn windows features on or off. There you will see service 
+
+For NFS just tick them both individually and then press OK. 
+
+
+
+
+P3: 
+
+S1: Add new user 
+
+S2: ifconfig (Copy static ip) 
+
+S3: ip r | grep deafult 
+
+S4: sudo nano /etc/network/interfaces (Edit static ip) 
+
+S5: After edit restart your system 
+
+S6: sudo /bin/su -c “echo ‘net.ipv6.conf.all.disable_ipv6=1’ 
+
+>> /etc/sysctl.conf” 
+
+S7: sudo sysctl –p 
+
+S8: ipmaddr (shows multicast address) 
+
+S9: systemctl –t service (Displays list of services) 
+
+S10: systemctl stop apparmor (Stops it) 
+
+S11: systemctl disable apparmor  
+
+ 
+
+P4:NTP server confi and NTP client network 
+
+S1: sudo apt install ntp 
+
+S2: sudo nano /etc/ntp.conf (Configures the ntp files) 
+
+S3: service ntp restart (Resart the ntp service) 
+
+S4: ntpq –pn (shows ntp servers) 
+
+S5: sudo apt-get install ntpdate (Used for time syncro) 
+
+S6: ntpdate ntp1.jst.mfeed.ad.jp (Checks time synchro) 
+
+S7: Do time synchronization on windows – Go to control panel>Clock & Region>Change the Timezone> Internet time>Change settings>Update now>OK 
+
+ 
+
+
+P5:Install and confi DNS server 
+
+sudo apt-get update 
+
+sudo apt-get upgrade 
+
+S1: sudo apt-get install bind9 bind9utils bind9 (Installs bind9 packages) 
+
+S2: sudo nano /etc/bind/named.conf.options (Uncomment 3 lines from forwarders and write 8.8.8.8) 
+
+S3: sudo systemctl restart bind9 (Restart to take in effect and we have succesfully installed caching name server) 
+
+
+
+
+P7:Install an ssh(secure shell) 
+
+S1: sudo apt-get –y install openssh-server 
+
+Now config the SSH server 
+
+S2: sudo systemctl status ssh 
+
+      sudo systemctl start ssh 
+
+      sudo systemctl enable ssh  
+
+      sudo nano /etc/sshd_config 
+
+S3: sudo systtemctl status ssh (Installs openssh-client server on machine) 
+
+
+
+
+P8: Install mysql 
+
+S1: sudo apt-get –y install mysql-server-5.7 
+
+S2: mysql –u root –p (Connects to it by opening) 
+
+S3: select user, host from mysql.user; (Displays user info) 
+
+S4: SHOW VARIABLES WHERE Variable_name=’port’; 
+
+S5: exit 
+
+S6: sudo apt-get –y install phpmyadmin (Installs phpmyadmin for mysql operations) 
+
+S7: sudo nano /etc/phpmyadmin/apache.confi (Edits apache file) 
+
+Once you open it get the line numbers type the command “Set numbers”. 
+
+Add requires ip near 8tth line “Require ip 127.0.0.1 10.0.0.0/24” than save and exit. 
+
+S8: sudo /etc/init.d/apache2 restart (Restarts the apache server) 
